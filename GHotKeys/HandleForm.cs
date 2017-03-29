@@ -10,11 +10,18 @@ using System.Windows.Forms;
 
 namespace GHotKeys
 {
-    public partial class Form1 : Form
+    public partial class HandleForm : Form
     {
-        public Form1()
+        public HandleForm()
         {
             InitializeComponent();
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == Hotkey.WmHotKey)
+                MessageBox.Show("Hotkey pressed");
+            base.WndProc(ref m);
         }
     }
 }
