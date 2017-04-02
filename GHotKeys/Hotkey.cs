@@ -38,6 +38,8 @@ namespace GHotKeys
 
         public override int GetHashCode() => (int)_modifiers ^ (int)_key ^ _hWnd.ToInt32();
 
+        public override string ToString() => $"Hotkey, Modifiers: {_modifiers}, Key: {_key}, Id: {_id}, Handler: {_hWnd}";
+
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vk);
 

@@ -10,17 +10,20 @@ using System.Windows.Forms;
 
 namespace GHotKeys
 {
-    public partial class HandleForm : Form
+    public partial class KeySenderForm : Form
     {
-        public HandleForm()
+        public KeySenderForm(Keys keyToSend)
         {
             InitializeComponent();
+            KeyToSend = keyToSend;
         }
+
+        public Keys KeyToSend { get; set; }
 
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == Hotkey.WmHotKey)
-                MessageBox.Show("Hotkey pressed");
+                NativeMethods.SendKeys(KeyToSend);
             base.WndProc(ref m);
         }
     }

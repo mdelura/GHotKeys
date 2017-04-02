@@ -20,8 +20,10 @@ namespace GHotKeys
         static void Main()
         {
             bool createdNew = true;
-            var assemblyGuidAttrib = (GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), true)[0];
-            using (Mutex mutex = new Mutex(true, assemblyGuidAttrib.ToString(), out createdNew))
+            //No idea why but when used Guid from the assembly then createdNew always return false... although this didn't happen in other project
+            //var assemblyGuidAttrib = (GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), true)[0];
+            //using (Mutex mutex = new Mutex(true, assemblyGuidAttrib.ToString(), out createdNew))
+            using (Mutex mutex = new Mutex(true, "41a052de-7449-49ea-87e8-2143a3d33122", out createdNew))
             {
                 if (createdNew)
                 {

@@ -1,6 +1,6 @@
 ﻿namespace GHotKeys
 {
-    partial class HandleForm
+    partial class KeySenderForm
     {
         /// <summary>
         /// Required designer variable.

@@ -49,11 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppTray.cs" />
-    <Compile Include="HandleForm.cs">
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="KeySenderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HandleForm.Designer.cs">
-      <DependentUpon>HandleForm.cs</DependentUpon>
+    <Compile Include="KeySenderForm.Designer.cs">
+      <DependentUpon>KeySenderForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="Program.cs" />
