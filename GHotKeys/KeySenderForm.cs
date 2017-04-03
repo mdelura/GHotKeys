@@ -20,6 +20,8 @@ namespace GHotKeys
 
         public Keys KeyToSend { get; set; }
 
+        public string GetFunction() => KeyToSend.ToString();
+
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == Hotkey.WmHotKey)

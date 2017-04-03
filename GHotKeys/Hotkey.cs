@@ -19,26 +19,33 @@ namespace GHotKeys
     {
         public const int WmHotKey = 0x0312;
 
-        private KeyModifier _modifiers;
-        private Keys _key;
         private IntPtr _hWnd;
         private int _id;
 
         public Hotkey(KeyModifier modifiers, Keys key, Form handlerForm)
         {
-            _modifiers = modifiers;
-            _key = key;
+            Modifiers = modifiers;
+            Key = key;
             _hWnd = handlerForm.Handle;
             _id = GetHashCode();
+            if (handlerForm is KeySenderForm)
+                Function = ((KeySenderForm)handlerForm).GetFunction();
         }
 
-        public bool Register() => RegisterHotKey(_hWnd, _id, (UInt32)_modifiers, (UInt32)_key);
+        public KeyModifier Modifiers { get; private set; }
+
+        public Keys Key { get; private set; }
+
+        public string Function { get; private set; }
+
+
+        public bool Register() => RegisterHotKey(_hWnd, _id, (UInt32)Modifiers, (UInt32)Key);
 
         public bool Unregister() => UnregisterHotKey(_hWnd, _id);
 
-        public override int GetHashCode() => (int)_modifiers ^ (int)_key ^ _hWnd.ToInt32();
+        public override int GetHashCode() => (int)Modifiers ^ (int)Key ^ _hWnd.ToInt32();
 
-        public override string ToString() => $"Hotkey, Modifiers: {_modifiers}, Key: {_key}, Id: {_id}, Handler: {_hWnd}";
+        public override string ToString() => $"Modifiers: {Modifiers}, Key: {Key}, Id: {_id}, Handler: {_hWnd}";
 
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vk);
