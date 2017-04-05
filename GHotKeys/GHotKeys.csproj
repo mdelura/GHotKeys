@@ -56,6 +56,7 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="AppTray.cs" />
+    <Compile Include="HotkeyInfo.cs" />
     <Compile Include="HotkeysWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +73,12 @@
     <Compile Include="Hotkey.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegisterHotkeyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RegisterHotkeyForm.Designer.cs">
+      <DependentUpon>RegisterHotkeyForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -88,6 +95,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="RegisterHotkeyForm.resx">
+      <DependentUpon>RegisterHotkeyForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\DataSources\Hotkey.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

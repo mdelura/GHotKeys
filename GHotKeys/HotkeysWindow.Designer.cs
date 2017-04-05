@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeysWindow));
             this._hotkeysGridView = new System.Windows.Forms.DataGridView();
             this.modifiersDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.keyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.functionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this._hotkeyBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this._registerButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this._hotkeysGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this._hotkeyBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -82,13 +82,23 @@
             // 
             this._hotkeyBindingSource.DataSource = typeof(GHotKeys.Hotkey);
             // 
+            // _registerButton
+            // 
+            this._registerButton.Location = new System.Drawing.Point(162, 409);
+            this._registerButton.Name = "_registerButton";
+            this._registerButton.Size = new System.Drawing.Size(126, 23);
+            this._registerButton.TabIndex = 1;
+            this._registerButton.Text = "Register new hotkey";
+            this._registerButton.UseVisualStyleBackColor = true;
+            this._registerButton.Click += new System.EventHandler(this._registerButton_Click);
+            // 
             // HotkeysWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(451, 402);
+            this.ClientSize = new System.Drawing.Size(451, 444);
+            this.Controls.Add(this._registerButton);
             this.Controls.Add(this._hotkeysGridView);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HotkeysWindow";
             this.Text = "Hotkeys";
             ((System.ComponentModel.ISupportInitialize)(this._hotkeysGridView)).EndInit();
@@ -104,5 +114,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn keyDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn functionDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource _hotkeyBindingSource;
+        private System.Windows.Forms.Button _registerButton;
     }
 }

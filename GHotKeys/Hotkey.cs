@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace GHotKeys
 {
@@ -15,29 +16,28 @@ namespace GHotKeys
         Win = 0x0008
     }
 
+    [Serializable]
     class Hotkey
     {
         public const int WmHotKey = 0x0312;
 
         private IntPtr _hWnd;
         private int _id;
+        private HotkeyInfo _info;
 
-        public Hotkey(KeyModifier modifiers, Keys key, Form handlerForm)
+        public Hotkey(HotkeyInfo info, Form handlerForm)
         {
-            Modifiers = modifiers;
-            Key = key;
+            _info = info;
+
             _hWnd = handlerForm.Handle;
             _id = GetHashCode();
-            if (handlerForm is KeySenderForm)
-                Function = ((KeySenderForm)handlerForm).GetFunction();
         }
 
-        public KeyModifier Modifiers { get; private set; }
+        public KeyModifier Modifiers => _info.Modifiers;
 
-        public Keys Key { get; private set; }
+        public Keys Key => _info.Key;
 
-        public string Function { get; private set; }
-
+        public string Function => _info.Function.ToString();
 
         public bool Register() => RegisterHotKey(_hWnd, _id, (UInt32)Modifiers, (UInt32)Key);
 
@@ -45,7 +45,7 @@ namespace GHotKeys
 
         public override int GetHashCode() => (int)Modifiers ^ (int)Key ^ _hWnd.ToInt32();
 
-        public override string ToString() => $"Modifiers: {Modifiers}, Key: {Key}, Id: {_id}, Handler: {_hWnd}";
+        public override string ToString() => $"{_info}, Id: {_id}, Handler: {_hWnd}";
 
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vk);
