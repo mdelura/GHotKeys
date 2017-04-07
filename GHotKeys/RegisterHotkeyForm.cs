@@ -71,7 +71,8 @@ namespace GHotKeys
         {
             _keys = ((Keys[])Enum.GetValues(typeof(Keys)))
                 .Where(k => k != Keys.None && !Enum.GetNames(typeof(KeyModifier)).Contains(k.ToString()))
-                .OrderBy(k => k.ToString())
+                .OrderBy(k => k.ToString().Length)
+                .ThenBy(k => k.ToString())
                 .Distinct()
                 .ToList();
             _keyCombo.DataSource = _keys;

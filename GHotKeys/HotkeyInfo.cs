@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace GHotKeys
 {
+    [Serializable]
     class HotkeyInfo
     {
         public HotkeyInfo(KeyModifier modifiers, Keys key, Keys function)

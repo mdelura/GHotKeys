@@ -16,7 +16,6 @@ namespace GHotKeys
         Win = 0x0008
     }
 
-    [Serializable]
     class Hotkey
     {
         public const int WmHotKey = 0x0312;
@@ -33,17 +32,20 @@ namespace GHotKeys
             _id = GetHashCode();
         }
 
+
         public KeyModifier Modifiers => _info.Modifiers;
 
         public Keys Key => _info.Key;
 
-        public string Function => _info.Function.ToString();
+        public Keys Function => _info.Function;
 
-        public bool Register() => RegisterHotKey(_hWnd, _id, (UInt32)Modifiers, (UInt32)Key);
+        public HotkeyInfo GetInfo() => _info;
+
+        public bool Register() => RegisterHotKey(_hWnd, _id, (UInt32)_info.Modifiers, (UInt32)_info.Key);
 
         public bool Unregister() => UnregisterHotKey(_hWnd, _id);
 
-        public override int GetHashCode() => (int)Modifiers ^ (int)Key ^ _hWnd.ToInt32();
+        public override int GetHashCode() => (int)_info.Modifiers ^ (int)_info.Key ^ _hWnd.ToInt32();
 
         public override string ToString() => $"{_info}, Id: {_id}, Handler: {_hWnd}";
 

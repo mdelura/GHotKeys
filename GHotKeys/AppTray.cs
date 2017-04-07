@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -10,18 +14,26 @@ namespace GHotKeys
 {
     class AppTray : IDisposable
     {
+        const string SavedHotkeysFileName = "hotkeyinfo.bin";
+
+
         NotifyIcon _notifyIcon;
+        AboutBox _aboutBox;
+        HotkeysWindow _hotkeysWindow;
 
         List<Hotkey> _hotkeys = new List<Hotkey>();
         List<KeySenderForm> _keySenderForms = new List<KeySenderForm>(); 
 
-        bool _isHotkeysWindowLoaded = false;
-        bool _isAboutLoaded = false;
-
         public AppTray()
         {
             InitializeNotifyIcon();
-            InitializeHotkeys();
+            //Check if save file is available
+            if (File.Exists(SavedHotkeysFileName))
+            {
+                HotkeyInfo[] infos = DeserializeHotkeyInfo(SavedHotkeysFileName);
+                foreach (var info in infos)
+                    RegisterHotkey(info);
+            }
         }
 
         public IEnumerable<Hotkey> Hotkeys => _hotkeys;
@@ -63,31 +75,25 @@ namespace GHotKeys
             return menuStrip;
         }
 
-        private void InitializeHotkeys()
+        private HotkeyInfo[] DeserializeHotkeyInfo(string fileName)
         {
-            //TODO: To be stored outside (serialization)
-            HotkeyInfo[] infos = new HotkeyInfo[]
-            {
-                new HotkeyInfo(KeyModifier.Win, Keys.C, Keys.MediaPlayPause),
-                new HotkeyInfo(KeyModifier.Win, Keys.End, Keys.MediaPlayPause),
-                new HotkeyInfo(KeyModifier.Win, Keys.PageDown, Keys.MediaNextTrack),
-                new HotkeyInfo(KeyModifier.Win, Keys.PageUp, Keys.MediaPreviousTrack),
-                new HotkeyInfo(KeyModifier.Win | KeyModifier.Ctrl, Keys.Z, Keys.MediaPlayPause),
-                new HotkeyInfo(KeyModifier.Win | KeyModifier.Ctrl, Keys.S, Keys.MediaNextTrack),
-                new HotkeyInfo(KeyModifier.Win | KeyModifier.Ctrl, Keys.A, Keys.MediaPreviousTrack),
-            };
-            //Register hotkeys and add to list if successful.
-            foreach (var info in infos)
-                RegisterHotkey(info);
+            IFormatter formatter = new BinaryFormatter();
+
+            using (FileStream fileStream = File.OpenRead(fileName))
+                return (HotkeyInfo[])formatter.Deserialize(fileStream);
         }
 
         private void ShowHotkeys_Click(object sender, EventArgs e)
         {
-            if (!_isHotkeysWindowLoaded)
+            if (_hotkeysWindow == null || _hotkeysWindow.IsDisposed)
             {
-                _isHotkeysWindowLoaded = true;
-                new HotkeysWindow(this).ShowDialog();
-                _isHotkeysWindowLoaded = false;
+                _hotkeysWindow = new HotkeysWindow(this);
+                _hotkeysWindow.UserDeletingRow += (object windowSender, EventArgs windowE) => SaveHotkeys();
+                _hotkeysWindow.Show();
+            }
+            else
+            {
+                _hotkeysWindow.Activate();
             }
         }
 
@@ -95,11 +101,14 @@ namespace GHotKeys
 
         private void About_Click(object sender, EventArgs e)
         {
-            if (!_isAboutLoaded)
+            if (_aboutBox == null || _aboutBox.IsDisposed)
             {
-                _isAboutLoaded = true;
-                new AboutBox().ShowDialog();
-                _isAboutLoaded = false;
+                _aboutBox = new AboutBox();
+                _aboutBox.Show();
+            }
+            else
+            {
+                _aboutBox.Activate();
             }
         }
 
@@ -108,7 +117,7 @@ namespace GHotKeys
         private void ShowRegisterHotkeyDialog(HotkeyInfo initial)
         {
             HotkeyInfo registerInfo = RegisterHotkeyForm.ShowHotkeyDialog(initial);
-            if (registerInfo != null && !RegisterHotkey(registerInfo))
+            if (registerInfo != null && !RegisterHotkey(registerInfo, true))
             {
                 if (MessageBox.Show("Unable to register Hotkey:\r\n" + 
                     $"{registerInfo.Modifiers.ToString().Replace(',', '+')} + {registerInfo.Key}\r\n" +
@@ -118,18 +127,27 @@ namespace GHotKeys
             }
         }
 
-        private bool RegisterHotkey(HotkeyInfo hotkeyInfo)
+        private bool RegisterHotkey(HotkeyInfo hotkeyInfo, bool save = false)
         {
             Hotkey hotkey = new Hotkey(hotkeyInfo, GetHandlerForm(hotkeyInfo));
             bool registered;
             if (registered = hotkey.Register())
             {
                 _hotkeys.Add(hotkey);
+                if (save)
+                    SaveHotkeys();
 #if DEBUG
                 System.Diagnostics.Debug.Print("{0}\t{1}", hotkey, registered ? "OK" : "Failed to Register");
 #endif
             }
             return registered;
+        }
+
+        private void SaveHotkeys()
+        {
+            IFormatter formatter = new BinaryFormatter();
+            using (FileStream fileStream = File.Create(SavedHotkeysFileName))
+                formatter.Serialize(fileStream, _hotkeys.Select(h => h.GetInfo()).ToArray());
         }
 
         private Form GetHandlerForm(HotkeyInfo registerInfo)

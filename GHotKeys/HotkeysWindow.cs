@@ -12,6 +12,7 @@ namespace GHotKeys
 {
     internal partial class HotkeysWindow : Form
     {
+        public event EventHandler UserDeletingRow;
         AppTray _appTray;
 
         public HotkeysWindow(AppTray appTray) 
@@ -28,6 +29,7 @@ namespace GHotKeys
             {
                 Hotkey toBeDeleted = (Hotkey)e.Row.DataBoundItem;
                 bool unregistered = toBeDeleted.Unregister();
+                UserDeletingRow?.Invoke(sender, e);
 #if DEBUG
                 System.Diagnostics.Debug.Print("Unregistered:" + unregistered); 
 #endif
