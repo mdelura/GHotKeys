@@ -4,7 +4,7 @@
 
 This is a small tray app that allows you to register key combination with a custom action. 
 
-Currently it is limited to assigning virtual Media Keys (PlayPause, Stop, Previous/Next Track) as it was the main purpose of this small project.
+Currently it is limited to assigning virtual Media and Volume Keys (PlayPause, Stop, Previous/Next Track, Volume Up/Down/Mute) as it was the main purpose of this small project.
 For more advanced hotkey app I recommend looking at [AutoHotkey project](https://github.com/Lexikos/AutoHotkey_L) or https://autohotkey.com/
 
 ---

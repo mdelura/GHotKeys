@@ -78,7 +78,7 @@ namespace GHotKeys
             _keyCombo.DataSource = _keys;
 
             _functions = ((Keys[])Enum.GetValues(typeof(Keys)))
-                .Where(k => k.ToString().StartsWith("Media"))
+                .Where(k => k.ToString().StartsWith("Media") || k.ToString().StartsWith("Volume"))
                 .OrderByDescending(k => k.ToString())
                 .ToList();
             _functionCombo.DataSource = _functions;
